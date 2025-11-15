@@ -176,12 +176,23 @@ public class DatabaseSeeder implements CommandLineRunner {
     private void printResults() {
         System.out.println("\nDatabase Contents:");
         System.out.println("====================");
+        userDAO.findAll().forEach(user -> {
+            System.out.println(" [User] " + user.getUsername() + " (" + user.getEmail() + ")");
+            System.out.println("   Roles: " + user.getRoles());
+            System.out.println();
+        });
         articleDAO.findAll().forEach(article -> {
             System.out.println(" [" + article.getClass().getSimpleName() + "] " + article.getTitle());
             if (article instanceof Blog) {
                 System.out.println("   Read time: " + ((Blog) article).getReadTime());
+            } else if (article instanceof Vlog) {
+                System.out.println("   Video URL: " + ((Vlog) article).getVideoFile().getVideoFileUrl());
             }
             System.out.println("   Tags: " + article.getTags());
+            System.out.println();
+            commentDAO.findAllByArticleId(article.getId()).forEach(comment -> {
+                System.out.println("     [Comment] " + comment.getContent() + " (by " + comment.getUser().getUsername() + ")");
+            });
             System.out.println();
         });
     }
