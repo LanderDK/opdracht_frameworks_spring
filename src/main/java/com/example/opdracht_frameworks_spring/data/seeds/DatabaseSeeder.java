@@ -3,6 +3,7 @@ package com.example.opdracht_frameworks_spring.data.seeds;
 import com.example.opdracht_frameworks_spring.dao.*;
 import com.example.opdracht_frameworks_spring.data.entity.*;
 import com.example.opdracht_frameworks_spring.dto.BlogPayload;
+import com.example.opdracht_frameworks_spring.dto.CommentPayload;
 import com.example.opdracht_frameworks_spring.dto.VideoFilePayload;
 import com.example.opdracht_frameworks_spring.dto.VlogPayload;
 import jakarta.transaction.Transactional;
@@ -149,14 +150,17 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedComments() {
-        Comment comment1 = new Comment(
+        CommentPayload commentPayload1 = new CommentPayload(
                 "Great article on Spring Boot!",
-                new Date()
+                1
         );
-        Comment comment2 = new Comment(
+        CommentPayload commentPayload2 = new CommentPayload(
                 "Very informative vlog about JPA.",
-                new Date()
+                2
         );
+
+        Comment comment1 = commentDAO.save(1, commentPayload1);
+        Comment comment2 = commentDAO.save(2, commentPayload2);
 
         List<Article> articles = articleDAO.findAll();
         List<User> users = userDAO.findAll();
@@ -167,9 +171,6 @@ public class DatabaseSeeder implements CommandLineRunner {
             comment2.setArticle(articles.get(1));
             comment2.setUser(users.get(1));
         }
-
-        commentDAO.save(comment1);
-        commentDAO.save(comment2);
     }
 
     private void printResults() {
