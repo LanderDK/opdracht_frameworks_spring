@@ -1,10 +1,7 @@
 package com.example.opdracht_frameworks_spring.data.seeds;
 
 import com.example.opdracht_frameworks_spring.dao.*;
-import com.example.opdracht_frameworks_spring.data.entity.Article;
-import com.example.opdracht_frameworks_spring.data.entity.Blog;
-import com.example.opdracht_frameworks_spring.data.entity.Comment;
-import com.example.opdracht_frameworks_spring.data.entity.User;
+import com.example.opdracht_frameworks_spring.data.entity.*;
 import com.example.opdracht_frameworks_spring.dto.BlogPayload;
 import com.example.opdracht_frameworks_spring.dto.VideoFilePayload;
 import com.example.opdracht_frameworks_spring.dto.VlogPayload;
@@ -109,42 +106,46 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedVlogs() {
-        VlogPayload vlog1 = new VlogPayload(
+        VlogPayload vlogPayload1 = new VlogPayload(
                 "Spring Boot Tutorial",
                 "An introduction to Spring Boot",
                 "In this vlog, we will explore the basics of Spring Boot...",
                 "spring-boot-tutorial",
                 Arrays.asList("java", "spring", "vlog"),
-                new Date(),
-                new Date(),
-                new VideoFilePayload("http://example.com/videos/spring-boot-tutorial.mp4")
+                new VideoFilePayload("http://example.com/videos/spring-boot-tutorial.mp4"),
+                Arrays.asList(1)
         );
 
-        VlogPayload vlog2 = new VlogPayload(
+        VlogPayload vlogPayload2 = new VlogPayload(
                 "JPA Inheritance Explained",
                 "Understanding JPA inheritance strategies",
                 "This vlog covers the different inheritance strategies in JPA...",
                 "jpa-inheritance-explained",
                 Arrays.asList("jpa", "hibernate", "vlog"),
-                new Date(),
-                new Date(),
-                new VideoFilePayload("http://example.com/videos/jpa-inheritance-explained.mp4")
+                new VideoFilePayload("http://example.com/videos/jpa-inheritance-explained.mp4"),
+                Arrays.asList(1, 2)
         );
 
-        VlogPayload vlog3 = new VlogPayload(
+        VlogPayload vlogPayload3 = new VlogPayload(
                 "Optimizing MySQL Performance",
                 "Tips and tricks for MySQL optimization",
                 "In this vlog, we discuss various techniques to optimize MySQL databases...",
                 "optimizing-mysql-performance",
                 Arrays.asList("mysql", "database", "vlog"),
-                new Date(),
-                new Date(),
-                new VideoFilePayload("http://example.com/videos/optimizing-mysql-performance.mp4")
+                new VideoFilePayload("http://example.com/videos/optimizing-mysql-performance.mp4"),
+                Arrays.asList(2)
         );
 
-        vlogDAO.save(vlog1);
-        vlogDAO.save(vlog2);
-        vlogDAO.save(vlog3);
+        Vlog vlog1 = vlogDAO.save(vlogPayload1);
+        Vlog vlog2 = vlogDAO.save(vlogPayload2);
+        Vlog vlog3 = vlogDAO.save(vlogPayload3);
+
+        // link vlogs and users
+        List<User> users = userDAO.findAll();
+        vlog1.addUser(users.get(0));
+        vlog2.addUser(users.get(1));
+        vlog3.addUser(users.get(0));
+        vlog3.addUser(users.get(1));
     }
 
     private void seedComments() {

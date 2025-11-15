@@ -9,23 +9,21 @@ public class VlogPayload {
     private String content;
     private String slug;
     private List<String> tags;
-    private Date publishedAt;
-    private Date updatedAt;
     private VideoFilePayload videoFile;
+    private List<Integer> userIds;
 
     // Constructors
     public VlogPayload() {}
 
     public VlogPayload(String title, String excerpt, String content, String slug,
-                       List<String> tags, Date publishedAt, Date updatedAt, VideoFilePayload videoFile) {
+                       List<String> tags, VideoFilePayload videoFile, List<Integer> userIds) {
         this.title = title;
         this.excerpt = excerpt;
         this.content = content;
         this.slug = slug;
         this.tags = tags;
-        this.publishedAt = publishedAt;
-        this.updatedAt = updatedAt;
         this.videoFile = videoFile;
+        this.userIds = userIds;
     }
 
     // Getters and Setters
@@ -69,27 +67,19 @@ public class VlogPayload {
         this.tags = tags;
     }
 
-    public Date getPublishedAt() {
-        return publishedAt;
-    }
-
-    public void setPublishedAt(Date publishedAt) {
-        this.publishedAt = publishedAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public VideoFilePayload getVideoFile() {
         return videoFile;
     }
 
     public void setVideoFile(VideoFilePayload videoFile) {
         this.videoFile = videoFile;
+    }
+
+    public List<Integer> getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(List<Integer> userIds) {
+        this.userIds = userIds;
     }
 }

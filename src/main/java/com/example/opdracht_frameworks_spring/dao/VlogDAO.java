@@ -1,8 +1,10 @@
 package com.example.opdracht_frameworks_spring.dao;
 
+import com.example.opdracht_frameworks_spring.data.entity.User;
 import com.example.opdracht_frameworks_spring.data.entity.VideoFile;
 import com.example.opdracht_frameworks_spring.data.entity.Vlog;
 import com.example.opdracht_frameworks_spring.dto.VlogPayload;
+import com.example.opdracht_frameworks_spring.repo.UserRepo;
 import com.example.opdracht_frameworks_spring.repo.VideoFileRepo;
 import com.example.opdracht_frameworks_spring.repo.VlogRepo;
 import jakarta.transaction.Transactional;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class VlogDAO {
     private final VlogRepo vlogRepo;
     private final VideoFileRepo videoFileRepo;
+    private final UserRepo userRepo;
 
-    public VlogDAO(VlogRepo vlogRepo, VideoFileRepo videoFileRepo) {
+    public VlogDAO(VlogRepo vlogRepo, VideoFileRepo videoFileRepo, UserRepo userRepo) {
         this.vlogRepo = vlogRepo;
         this.videoFileRepo = videoFileRepo;
+        this.userRepo = userRepo;
     }
 
     public List<Vlog> findAll() {
@@ -46,9 +50,18 @@ public class VlogDAO {
         vlog.setContent(payload.getContent());
         vlog.setSlug(payload.getSlug());
         vlog.setTags(payload.getTags());
-        vlog.setPublishedAt(payload.getPublishedAt() != null ? payload.getPublishedAt() : new Date());
-        vlog.setUpdatedAt(payload.getUpdatedAt() != null ? payload.getUpdatedAt() : new Date());
+        Date now = new Date();
+        vlog.setPublishedAt(now);
+        vlog.setUpdatedAt(now);
         vlog.setVideoFile(savedVideoFile);
+
+        for (Integer userId : payload.getUserIds()) {
+            Optional<User> user = userRepo.findById(userId);
+            if (user.isEmpty()) {
+                throw new IllegalArgumentException("User with ID " + userId + " not found");
+            }
+            vlog.addUser(user.get());
+        }
 
         return vlogRepo.save(vlog);
     }
@@ -66,8 +79,7 @@ public class VlogDAO {
                     existingVlog.setContent(payload.getContent());
                     existingVlog.setSlug(payload.getSlug());
                     existingVlog.setTags(payload.getTags());
-                    existingVlog.setPublishedAt(payload.getPublishedAt() != null ? payload.getPublishedAt() : existingVlog.getPublishedAt());
-                    existingVlog.setUpdatedAt(payload.getUpdatedAt() != null ? payload.getUpdatedAt() : new Date());
+                    existingVlog.setUpdatedAt(new Date());
                     // Update VideoFile if provided
                     if (payload.getVideoFile() != null) {
                         VideoFile videoFile = existingVlog.getVideoFile();
